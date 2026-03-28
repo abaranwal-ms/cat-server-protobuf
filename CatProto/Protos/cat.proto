@@ -1,0 +1,41 @@
+// ──────────────────────────────────────────────────────────────
+// cat.proto — the "contract" between client and server
+// ──────────────────────────────────────────────────────────────
+// Protobuf is a language-neutral schema that describes the SHAPE
+// of your data.  The protoc compiler reads this file and spits
+// out C# classes (CatRequest, CatResponse) with efficient binary
+// serialization built in.
+//
+// Key concepts:
+//   syntax  = which protobuf version (proto3 is current)
+//   package = namespace to avoid name collisions
+//   message = like a class / struct — a bag of typed fields
+//   each field has a unique TAG NUMBER (1, 2, …). The wire
+//   format uses these numbers, NOT the field names, which is
+//   why protobuf is so compact.
+// ──────────────────────────────────────────────────────────────
+
+syntax = "proto3";                // use proto3 rules
+
+package cat;                       // maps to C# namespace "Cat"
+
+option csharp_namespace = "CatProto";  // override C# namespace
+
+// ── REQUEST ─────────────────────────────────────────────────
+// The client sends this when calling  PUT /food
+//
+// NOTE: there is no "method" or "path" field here!
+// Those live in the HTTP layer (the verb PUT and the URL /food).
+// The protobuf body only carries the BUSINESS DATA — what is
+// NOT already expressed by HTTP itself.
+message CatRequest {
+  string item = 1;   // e.g. "tuna" — the food to give the cat
+}
+
+// ── RESPONSE ────────────────────────────────────────────────
+// The server sends this back
+message CatResponse {
+  int32  status_code = 1;   // e.g. 200
+  string message     = 2;   // e.g. "meow meow"
+  string cat_mood    = 3;   // e.g. "happy"
+}
